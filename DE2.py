@@ -163,7 +163,7 @@ class DE:
 
         """
         for i in range(0, self.NP):
-            if self.smoteObj(u_list[i]) <= self.smoteObj(np_list[i]):
+            if self.smoteObj(u_list[i]) >= self.smoteObj(np_list[i]):
                 np_list[i] = u_list[i]
             else:
                 np_list[i] = np_list[i]
