@@ -242,7 +242,7 @@ class Smote:
         targetPoint = np.asarray(targetPoint)
         allPoints = np.asarray(allPoints)
         for idx, point in enumerate(allPoints):
-            subtraction = point - targetPoint
+            subtraction = abs(point - targetPoint)
             result = np.sum(subtraction**r)
             candidate.append((result**index, idx))
         candidate = sorted(candidate, key=lambda x: x[0])
