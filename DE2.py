@@ -118,8 +118,8 @@ class DE:
                 add[0] = self.getNeareast(add[0], self.ratioRange)
             if add[1] not in self.kRange:
                 add[1] = self.getNeareast(add[1], self.kRange)
-            add[2] = max(self.value_down_range, min(
-                self.value_up_range, add[2]))
+            add[2] = (self.value_down_range + random.random() *
+                      (self.value_up_range - self.value_down_range))
             v_list.append(add)
 
         return v_list
@@ -171,14 +171,14 @@ class DE:
 
     def process(self):
         np_list = self.np_list
-        min_x = []
-        min_f = []
+        max_x = []
+        max_f = []
         for i in range(0, self.NP):
             xx = []
             xx.append(self.smoteObj(np_list[i]))
-        # 将初始化的种群对应的min_f和min_xx加入
-        min_f.append(min(xx))
-        min_x.append(np_list[xx.index(min(xx))])
+        # 将初始化的种群对应的max_f和max_xx加入
+        max_f.append(max(xx))
+        max_x.append(np_list[xx.index(max(xx))])
 
         # 迭代循环
         for i in range(0, self.generation):
@@ -190,19 +190,19 @@ class DE:
             for i in range(0, self.NP):
                 xx = []
                 xx.append(self.smoteObj(np_list[i]))
-            min_f.append(min(xx))
-            min_x.append(np_list[xx.index(min(xx))])
+            max_f.append(max(xx))
+            max_x.append(np_list[xx.index(max(xx))])
 
         # 输出
-        min_ff = min(min_f)
-        # 用min_f.index()根据最小值min_ff找对应的染色体，说明不一定最后的染色体是最好的
-        min_xx = min_x[min_f.index(min_ff)]
-        print('the minimum point x =', min_xx)
-        print('the minimum value y =', min_ff)
+        max_ff = max(max_f)
+        # 用max_f.index()根据最小值max_ff找对应的染色体，说明不一定最后的染色体是最好的
+        max_xx = max_x[max_f.index(max_ff)]
+        print('the maximum point x =', max_xx)
+        print('the maximum value y =', max_ff)
 
         # 画图
         x_label = np.arange(0, self.generation + 1, 1)
-        plt.plot(x_label, min_f, color='blue')
+        plt.plot(x_label, max_f, color='blue')
         plt.xlabel('iteration')
         plt.ylabel('fx')
         plt.savefig('./iteration-f.png')
