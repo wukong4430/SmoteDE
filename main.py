@@ -8,12 +8,15 @@ import numpy as np
 from DE2 import DE
 # from DE_standard import DE
 from Processing import Processing
+from sklearn.linear_model import BayesianRidge
 
 
 def bootstrap(dataset):
 
     training_data_X, training_data_y, testing_data_X, testing_data_y = Processing(
     ).separate_data(dataset)
+
+    brr = BayesianRidge()
 
     de = DE(NP=100,
             F=0.6,
@@ -25,7 +28,8 @@ def bootstrap(dataset):
             value_up_range=5.0,
             value_down_range=0.1,
             X=training_data_X,
-            y=training_data_y)
+            y=training_data_y,
+            classifier=brr)
 
     de.process()
 

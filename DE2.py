@@ -9,7 +9,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import math
 import random
-from sklearn.linear_model import BayesianRidge
 from modifySmote import Smote
 from sklearn.model_selection import train_test_split
 from PerformanceMeasure import PerformanceMeasure
@@ -38,7 +37,8 @@ class DE:
                  value_up_range=5.0,
                  value_down_range=0.1,
                  X=None,
-                 y=None):
+                 y=None,
+                 classifier=None):
 
         self.NP = NP   # 种群数量
         self.F = F   # 缩放因子
@@ -49,6 +49,7 @@ class DE:
         self.value_down_range = value_down_range
         self.ratioRange = ratioRange
         self.kRange = kRange
+        self.classifier = classifier
 
         self.np_list = self.initialtion()
 
@@ -239,10 +240,8 @@ class DE:
         smote_X, smote_y = Smote(
             X=self.trainX, Y=self.trainy, ratio=ratio, k=k, r=r).over_sampling()
 
-        brr = BayesianRidge()
-
         # get the FPA with bbr model.
-        fpa = getFPA(brr=brr, smote_X=smote_X, smote_y=smote_y,
+        fpa = getFPA(brr=self.classifier, smote_X=smote_X, smote_y=smote_y,
                      validX=self.validX, validy=self.validy)
 
         return fpa
