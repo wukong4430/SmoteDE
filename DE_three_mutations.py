@@ -12,6 +12,8 @@ import random
 from modifySmote import Smote
 from sklearn.model_selection import train_test_split
 from PerformanceMeasure import PerformanceMeasure
+from Processing import Processing
+
 
 """
 总共20个连续性的基因
@@ -273,5 +275,9 @@ if __name__ == '__main__':
     # NP, F, CR, generation, len_x, value_up_range, value_down_range = initpara()
     # np_list = initialtion(NP)
     # main(np_list)
-    de = DE()
-    de.process()
+    for dataset, filename in Processing().import_single_data():
+        training_data_X, training_data_y, testing_data_X, testing_data_y = Processing(
+        ).separate_data(dataset)
+        de = DE(X=training_data_X,
+                y=training_data_y)
+        de.process()
