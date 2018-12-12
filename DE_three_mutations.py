@@ -29,8 +29,7 @@ class DE:
                  value_up_range=20.0,
                  value_down_range=-20.0,
                  X=None,
-                 y=None,
-                 classifier=None):
+                 y=None):
 
         self.NP = NP   # 种群数量
         self.F_CR = F_CR   # 缩放因子
@@ -38,12 +37,10 @@ class DE:
         self.len_x = len_x
         self.value_up_range = value_up_range
         self.value_down_range = value_down_range
-        self.classifier = classifier
 
         self.np_list = self.initialtion()
-
-        self.trainX, self.trainy, self.validX, self.validy = dataProcess(
-            X=X, y=y).generateData()
+        self.training_data_X = X
+        self.training_data_y = y
 
     def initialtion(self):
         # 种群初始化
@@ -69,7 +66,7 @@ class DE:
         # 列表的数乘
         return [a * b for b in b_list]
 
-    def random_distinct_integers(number):
+    def random_distinct_integers(self, number):
         """ 从range(0, self.NP-1) 中选出number个不相同的整数。
 
         """
@@ -140,7 +137,7 @@ class DE:
             mul2 = self.multiply(F, sub2)
             add1 = self.add(np_list[r1], mul1)
             add2 = self.add(add1, mul2)
-            v_list.append(add)
+            v_list.append(add2)
 
         u_list = self.crossover(np_list, v_list, CR)
         return u_list
@@ -193,10 +190,10 @@ class DE:
 
         """
         for i in range(0, self.NP):
-            fpa1 = self.smoteObj(u_list1[i])
-            fpa2 = self.smoteObj(u_list2[i])
-            fpa3 = self.smoteObj(u_list3[i])
-            fpa4 = self.smoteObj(np_list[i])
+            fpa1 = self.Objfunction(u_list1[i])
+            fpa2 = self.Objfunction(u_list2[i])
+            fpa3 = self.Objfunction(u_list3[i])
+            fpa4 = self.Objfunction(np_list[i])
             max_fpa = max(fpa1, fpa2, fpa3, fpa4)
             if max_fpa == fpa1:
                 np_list[i] = u_list1[i]
@@ -214,7 +211,7 @@ class DE:
         max_f = []
         for i in range(0, self.NP):
             xx = []
-            xx.append(self.smoteObj(np_list[i]))
+            xx.append(self.Objfunction(np_list[i]))
         # 将初始化的种群对应的max_f和max_xx加入
         max_f.append(max(xx))
         max_x.append(np_list[xx.index(max(xx))])
@@ -229,7 +226,7 @@ class DE:
             np_list = self.selection(u_list1, u_list2, u_list3, np_list)
             for i in range(0, self.NP):
                 xx = []
-                xx.append(self.smoteObj(np_list[i]))
+                xx.append(self.Objfunction(np_list[i]))
             max_f.append(max(xx))
             max_x.append(np_list[xx.index(max(xx))])
 
@@ -259,47 +256,16 @@ class DE:
             f = f + (x[i] ** 2 - (10 * math.cos(2 * np.pi * x[i])) + 10)
         return f
 
-    def smoteObj(self, smoteParam):
-        """传入所有参数计算一个fpa值
-        smoteParam: [ratio, k, r]
-        param: ratio: smote的比例
-               k: 最邻近个数
-               p: minkowski 指标
-
+    def Objfunction(self, Param):
         """
-        def getFPA(brr, smote_X, smote_y, validX, validy):
-            brr = brr.fit(smote_X, smote_y)
-            brr_pred_y = np.around(brr.predict(validX))
-            brr_fpa = PerformanceMeasure(validy, brr_pred_y).FPA()
-            return brr_fpa
-
-        ratio = smoteParam[0]
-        k = smoteParam[1]
-        r = smoteParam[2]
-        smote_X, smote_y = Smote(
-            X=self.trainX, Y=self.trainy, ratio=ratio, k=k, r=r).over_sampling()
-
-        # get the FPA with bbr model.
-        fpa = getFPA(brr=self.classifier, smote_X=smote_X, smote_y=smote_y,
-                     validX=self.validX, validy=self.validy)
+        传入所有参数计算一个fpa值
+        """
+        pred_y = []
+        for test_x in self.training_data_X:
+            pred_y.append(float(np.dot(test_x, Param)))
+        fpa = PerformanceMeasure(self.training_data_y, pred_y).FPA()
 
         return fpa
-
-
-class dataProcess:
-    def __init__(self, X, y):
-        self.X = X
-        self.y = y
-
-    def generateData(self):
-        """将数据集分成4份, 3份训练集, 1份验证集
-
-        """
-
-        trainX, validX, trainy, validy = train_test_split(
-            self.X, self.y, test_size=0.25, random_state=0)
-
-        return trainX, trainy, validX, validy
 
 
 if __name__ == '__main__':
