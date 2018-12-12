@@ -2,7 +2,7 @@
 # @Author: Kicc
 # @Date:   2018-11-24 20:51:54
 # @Last Modified by:   Kicc
-# @Last Modified time: 2018-12-06 12:59:18
+# @Last Modified time: 2018-12-12 12:19:30
 
 
 import numpy as np
@@ -102,13 +102,14 @@ class DE:
             while r1 == i:
                 r1 = random.randint(0, self.NP - 1)
             r2 = random.randint(0, self.NP - 1)
-            while r2 == r1 | r2 == i:
+            while r2 == r1 or r2 == i:
                 r2 = random.randint(0, self.NP - 1)
             r3 = random.randint(0, self.NP - 1)
-            while r3 == r2 | r3 == r1 | r3 == i:
+            while r3 == r2 or r3 == r1 or r3 == i:
                 r3 = random.randint(0, self.NP - 1)
 
             sub = self.substract(np_list[r2], np_list[r3])
+            # 避免早熟
             self.F *= 2**np.exp(1 - (self.generation /
                                      (self.generation + 1 - currentGeneration)))
             mul = self.multiply(self.F, sub)
