@@ -2,8 +2,7 @@
 # @Author: Kicc
 # @Date:   2018-12-12 12:35:46
 # @Last Modified by:   Kicc
-# @Last Modified time: 2018-12-12 20:23:00
-
+# @Last Modified time: 2018-12-26 12:54:10
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,15 +13,11 @@ from sklearn.model_selection import train_test_split
 from PerformanceMeasure import PerformanceMeasure
 from Processing import Processing
 
-
 """
-总共20个连续性的基因
-【-20, 20】
-        
 """
 
 
-class DE:
+class DE_three_mutations:
     def __init__(self,
                  NP=100,
                  F_CR=[(1.0, 0.1), (1.0, 0.9), (0.8, 0.2)],
@@ -209,8 +204,8 @@ class DE:
 
     def process(self):
         np_list = self.np_list
-        max_x = []
-        max_f = []
+        max_x = []  # 保存每次迭代的最佳染色体
+        max_f = []  # 保存每次迭代的最佳染色体对应的标量
         for i in range(0, self.NP):
             xx = []
             xx.append(self.Objfunction(np_list[i]))
@@ -247,16 +242,7 @@ class DE:
         plt.savefig('./iteration-f.png')
         plt.show()
 
-    def object_function(self, x):
-        """
-        适应度函数注册
-        x是一个list
-        x^2 - (10*cos(2*pi*x)+10)
-        """
-        f = 0
-        for i in range(0, len(x)):
-            f = f + (x[i] ** 2 - (10 * math.cos(2 * np.pi * x[i])) + 10)
-        return f
+        return max_xx
 
     def Objfunction(self, Param):
         """
@@ -278,6 +264,6 @@ if __name__ == '__main__':
     for dataset, filename in Processing().import_single_data():
         training_data_X, training_data_y, testing_data_X, testing_data_y = Processing(
         ).separate_data(dataset)
-        de = DE(X=training_data_X,
-                y=training_data_y)
+        de = DE_three_mutations(X=training_data_X,
+                                y=training_data_y)
         de.process()
