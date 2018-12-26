@@ -2,7 +2,7 @@
 # @Author: Kicc
 # @Date:   2018-12-12 12:35:46
 # @Last Modified by:   Kicc
-# @Last Modified time: 2018-12-26 12:54:10
+# @Last Modified time: 2018-12-26 13:46:36
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -203,6 +203,9 @@ class DE_three_mutations:
         return np_list
 
     def process(self, objfunc):
+        """传入适应度函数objfunc
+
+        """
         np_list = self.np_list
         max_x = []  # 保存每次迭代的最佳染色体
         max_f = []  # 保存每次迭代的最佳染色体对应的标量
