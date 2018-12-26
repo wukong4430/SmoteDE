@@ -202,13 +202,13 @@ class DE_three_mutations:
                 np_list[i] = np_list[i]
         return np_list
 
-    def process(self):
+    def process(self, objfunc):
         np_list = self.np_list
         max_x = []  # 保存每次迭代的最佳染色体
         max_f = []  # 保存每次迭代的最佳染色体对应的标量
         for i in range(0, self.NP):
             xx = []
-            xx.append(self.Objfunction(np_list[i]))
+            xx.append(objfunc(np_list[i]))
         # 将初始化的种群对应的max_f和max_xx加入
         max_f.append(max(xx))
         max_x.append(np_list[xx.index(max(xx))])
@@ -223,7 +223,7 @@ class DE_three_mutations:
             np_list = self.selection(u_list1, u_list2, u_list3, np_list)
             for i in range(0, self.NP):
                 xx = []
-                xx.append(self.Objfunction(np_list[i]))
+                xx.append(objfunc(np_list[i]))
             max_f.append(max(xx))
             max_x.append(np_list[xx.index(max(xx))])
 
@@ -266,4 +266,4 @@ if __name__ == '__main__':
         ).separate_data(dataset)
         de = DE_three_mutations(X=training_data_X,
                                 y=training_data_y)
-        de.process()
+        de.process(de.Objfunction)
