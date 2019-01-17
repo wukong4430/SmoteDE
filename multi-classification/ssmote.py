@@ -8,7 +8,7 @@
 # Distributed under terms of the MIT license.
 
 from concatModule import ConcatMinority
-from utils import tuple2dict
+from utils import tuple2dict, arrayConcat
 import numpy as np
 
 
@@ -136,11 +136,11 @@ class Ssmote(object):
                 tmpX = [self.X[np.where(self.y == int(c))] for c in _classes]
                 tmpy = [self.y[np.where(self.y == int(c))] for c in _classes]
 
-                trainingX = []
-                trainingy = []
-                for x, y in zip(tmpX, tmpy):
-                    trainingX = np.vstack((trainingX, x))
-                    trainingy = np.vstack((trainingy, y))
+                trainingX = arrayConcat(tmpX)
+                trainingy = arrayConcat(tmpy)
+                # for x, y in zip(tmpX, tmpy):
+                #     trainingX = np.vstack((trainingX, x))
+                #     trainingy = np.vstack((trainingy, y))
 
                 all_trainingX.append(trainingX)
                 all_trainingy.append(trainingy)

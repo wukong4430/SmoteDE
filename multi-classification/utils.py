@@ -43,6 +43,6 @@ if __name__ == '__main__':
     res = tuple2dict(_proportion)
     print(res)
     # main()
-    tmpX = [np.array([[8,8], [7,9]]), np.array([[10,10], [13, 13]])]
+    tmpX = [np.array([[8,8], [7,9], [32,23]]), np.array([[10,10], [13, 13]])]
     res = arrayConcat(tmpX)
     print(res)
