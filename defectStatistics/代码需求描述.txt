@@ -1,0 +1,25 @@
+代码需求描述.txt
+
+:Author: kicc
+:Email: kiccshen@whu.edu.cn
+:Date: 2019-01-14 10:07
+
+
+#Module represents the number of modules in the release, 
+#Defects represents the total number of defects in the release, 
+%Defect represents the percentage of defective-prone modules in the release,
+Max is the maximum value of defects in the release,
+Avg is the average value of defects of all defective-prone modules in the release(就是#defects这一列的值除以（#instances乘以%defects）). 类似于下面这个表。
+
+然后还有每个release中，
+缺陷个数为1的模块数占整个release模块数的数量的比例，
+比如ant1.3中缺陷个数为10，那么比例就为10/125。
+缺陷个数为2的模块数占整个release模块数的数量的比例。
+缺陷个数为3的模块数占整个release模块数的数量的比例。 
+缺陷个数为4的模块数占整个release模块数的数量的比例。
+缺陷个数为5的模块数占整个release模块数的数量的比例。
+缺陷个数为6的模块数占整个release模块数的数量的比例。
+缺陷个数为7的模块数占整个release模块数的数量的比例。
+缺陷个数为8的模块数占整个release模块数的数量的比例。
+缺陷个数大于8的模块数占整个release模块数的数量的比例。
+最后把代码也发给我，用邮箱存着，就免得后面加了新数据又要统计。
