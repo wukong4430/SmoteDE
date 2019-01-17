@@ -1,0 +1,26 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/45968eff/
+ConcatMinority	concatModule.py	/^class ConcatMinority(object):$/;"	c
+Ssmote	ssmote.py	/^class Ssmote(object):$/;"	c
+__init__	concatModule.py	/^    def __init__(self, data, ratio):$/;"	m	class:ConcatMinority
+__init__	ssmote.py	/^    def __init__(self, X, y, proportion, k=5, r=0.1):$/;"	m	class:Ssmote
+_populate	ssmote.py	/^    def _populate(self, trainingX, trainingy, i, nnarray, r):$/;"	m	class:Ssmote
+_proportion	utils.py	/^    _proportion = [('0', 80.0), ('1', 10.0), ('2', 5), ('3+4', 3.5), ('5', 1.5)]$/;"	v
+concat	concatModule.py	/^    def concat(self):$/;"	m	class:ConcatMinority
+constructData	ssmote.py	/^def constructData(length):$/;"	f
+dict2tuple	concatModule.py	/^    def dict2tuple(self, data):$/;"	m	class:ConcatMinority
+getSynNumber	ssmote.py	/^    def getSynNumber(self, arg1=None):$/;"	m	class:Ssmote
+getUnsyn	ssmote.py	/^    def getUnsyn(self, arg1=None):$/;"	m	class:Ssmote
+main	concatModule.py	/^def main():$/;"	f
+main	ssmote.py	/^def main():$/;"	f
+nearestNeighbors	ssmote.py	/^    def nearestNeighbors(self, r, k, targetPoint, allPoints):$/;"	m	class:Ssmote
+np	ssmote.py	/^import numpy as np$/;"	I
+over_sampling	ssmote.py	/^    def over_sampling(self, trainingX, trainingy, synSize):$/;"	m	class:Ssmote
+res	utils.py	/^    res = tuple2dict(_proportion)$/;"	v
+synthesis	ssmote.py	/^    def synthesis(self, arg1):$/;"	m	class:Ssmote
+tuple2dict	utils.py	/^def tuple2dict(list_of_tuple):$/;"	f
