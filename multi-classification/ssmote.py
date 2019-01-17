@@ -8,6 +8,7 @@
 # Distributed under terms of the MIT license.
 
 from concatModule import ConcatMinority
+from sklearn.neighbors import NearestNeighbors
 from utils import tuple2dict, arrayConcat
 import numpy as np
 
@@ -109,7 +110,7 @@ class Ssmote(object):
         #     self._proportion_modified = sorted(
         #         self._proportion_modified, key=lambda x: x[1])
 
-        # instanceSize = self.instanceSize
+        instanceSize = self.instanceSize
 
         # # 获取需要合成的类
         # _class = self._proportion_modified[-1][0]
@@ -130,7 +131,7 @@ class Ssmote(object):
                 # 添加， 不执行over_sampling
                 all_trainingX.append(trainingX)
                 all_trainingy.append(trainingy)
-                all_size.append(size)
+                all_size.append(size * instanceSize / 100)
             else:
                 _classes = _class.split('+')
                 tmpX = [self.X[np.where(self.y == int(c))] for c in _classes]
@@ -144,11 +145,11 @@ class Ssmote(object):
 
                 all_trainingX.append(trainingX)
                 all_trainingy.append(trainingy)
-                all_size.append(size)
+                all_size.append(size * instanceSize / 100)
 
         return all_trainingX, all_trainingy, all_size
 
-    def synthesis(self, arg1):
+    def synthesis(self, arg1=None):
         """ 遍历all_trainigX, all_trainingy
             以及每个类需要合成的样本个数
             调用self.over_sampling()
@@ -157,8 +158,11 @@ class Ssmote(object):
         :returns: none
 
         """
+
+        all_trainingX, all_trainingy, all_size = self.getUnsyn()
         self.finalX, self.finaly = self.X, self.y
-        for trainingX, trainingy in zip(all_trainingX, all_trainingy):
+        for trainingX, trainingy, synSize in zip(
+                all_trainingX, all_trainingy, all_size):
             self.over_sampling(trainingX, trainingy, synSize)
 
         return self.finalX, self.finaly
@@ -172,24 +176,33 @@ class Ssmote(object):
         # 需要合成的数据为p * index, 设index=1
         self.index = 1
         p = synSize / self.index
+        if len(trainingX)==1:
+            p = 1
+        p = int(p)
         # trainingX =  # Todo
         # trainingy =  # Todo
-        self.syntheticX = np.zeros((synSize, self.n_attrs))
+        self.syntheticX = np.zeros((int(synSize), self.n_attrs))
         self.syntheticY = []
 
         self.count = p * self.index - 1
         for i in range(p):
+            k = min(trainingX.shape[0], self.k)
+            # k = self.k
             # 使用自定义的取邻近k个函数
             nnarray = self.nearestNeighbors(
-                self.r, self.k, targetPoint=trainingX[i], allPoints=trainingX)
+                self.r, k, targetPoint=trainingX[int(i/p)], allPoints=trainingX)
 
-            self._populate(trainingX, trainingy, i, nnarray, self.r)
+            self._populate(trainingX, trainingy, int(i/p), nnarray, self.r)
 
         self.syntheticX = self.syntheticX[::-1]
         self.syntheticY = np.array(self.syntheticY)
 
-        self.finalX = np.hstack((self.finalX, self.syntheticX))
-        self.finaly = np.vstack((self.finaly, self.syntheticY))
+        print('生成的X:', self.syntheticX.shape)
+        print('生成的y:', self.syntheticY.shape)
+        print('之前的X:', self.finalX.shape)
+        print('之前的y:', self.finaly.shape)
+        self.finalX = np.vstack((self.finalX, self.syntheticX))
+        self.finaly = np.hstack((self.finaly, self.syntheticY))
 
     def _populate(self, trainingX, trainingy, i, nnarray, r):
         """ 从trainingX[i]的k个邻居中随机选取index次，生成index个合成的样本
@@ -206,6 +219,12 @@ class Ssmote(object):
             nn = np.random.randint(0, self.k)
             nn = min(nn, len(nnarray) - 1)
 
+            print('\nnnarray =', nnarray)
+            print('nn =', nn)
+            print('i =', i)
+            print('trainingX.shape =', trainingX.shape)
+            print('trainingX:', trainingX)
+            print('trainingy:', trainingy)
             dif = trainingX[nnarray[nn]] - trainingX[i]
             gap = np.random.rand(1, self.n_attrs)
             self.syntheticX[self.count] = trainingX[i] + gap.flatten() * dif
@@ -221,6 +240,8 @@ class Ssmote(object):
                 self.syntheticY.append(y)
             else:
                 self.syntheticY.append(self.y[i] * 1.0)
+
+            self.count -= 1
 
     def nearestNeighbors(self, r, k, targetPoint, allPoints):
         """获得距离目标点最近的k个点的标号
@@ -254,11 +275,11 @@ def constructData(length):
 
     X = np.array([[1, 1]] * length)
     y = np.zeros(length)
-    X[0], y[0] = [5, 5], 5
-    X[1:3], y[1:3] = [4, 4], 4
-    X[3:5], y[3:5] = [3, 3], 3
-    X[5:10], y[5:10] = [2, 2], 2
-    X[10:20], y[10:20] = [1, 1], 1
+    X[0:3], y[0:3] = [5, 5], 5
+    X[3:5], y[3:5] = [4, 4], 4
+    X[5:8], y[5:8] = [3, 3], 3
+    X[8:15], y[8:15] = [2, 2], 2
+    X[15:30], y[15:30] = [1, 1], 1
     # print(X, y)
     return X, y
 
@@ -269,7 +290,7 @@ def main():
     # y = np.array([2, 3, 5, 1, 3, 1, 4, 3, 0, 0, 0, 0,
     #               0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ])
     X, y = constructData(100)
-    proportion = [('0', 80.0), ('1', 10.0), ('2', 5), ('3+4', 4), ('5', 1)]
+    proportion = [('0', 70.0), ('1', 15.0), ('2', 7), ('3+4', 5), ('5', 3)]
     # proportion = [('0', 100.0), ('1', 50.0), ('2', 25), ('3+4', 15), ('5', 10)]
 
     con = Ssmote(X=X, y=y, proportion=proportion)
@@ -279,6 +300,10 @@ def main():
     print(all_X)
     print(all_y)
     print(all_size)
+    print('-'*20, '下面开始合成', '-'*20)
+
+    resX, resy = con.synthesis()
+    print(resX, resy)
 
 
 if __name__ == '__main__':
