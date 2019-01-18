@@ -37,6 +37,20 @@ def tuple2dict(list_of_tuple):
         res[t[0]] = t[1]
     return res
 
+def dict2tuple(dict):
+    """ convert dict -> List[tuple]
+
+    :dict: TODO
+    :returns: TODO
+
+    """
+    res = []
+    for key, value in dict.items():
+        tmp = (key, value)
+        res.append(tmp)
+
+    return res
+
 
 if __name__ == '__main__':
     _proportion = [('0', 80.0), ('1', 10.0), ('2', 5), ('3+4', 3.5), ('5', 1.5)]
@@ -45,4 +59,8 @@ if __name__ == '__main__':
     # main()
     tmpX = [np.array([[8,8], [7,9], [32,23]]), np.array([[10,10], [13, 13]])]
     res = arrayConcat(tmpX)
+    print(res)
+
+    dicct = {'0': 80, '1':10, '2':5, '3':2, '4':1.5, '5':1.5}
+    res = dict2tuple(dicct)
     print(res)
