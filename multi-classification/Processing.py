@@ -23,7 +23,7 @@ class Processing(object):
 
     def __init__(self):
         """定义数据的文件夹路径 """
-        self.dataPath= '../datasetcsv'
+        self.dataPath= '../data'
         # self.dataPath = '../tinydataset'
         
     def dataload(self):
@@ -56,7 +56,7 @@ def convert2numpy(dataset):
     dataset = np.array(dataset)
     columns = dataset.shape[1]
 
-    dataX, datay = dataset[:, columns-1], dataset[:, -1]
+    dataX, datay = dataset[:, 0:columns-1], dataset[:, -1]
     return dataX, datay
         
 

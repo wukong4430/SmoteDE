@@ -56,7 +56,7 @@ def convert2numpy(dataset):
     dataset = np.array(dataset)
     columns = dataset.shape[1]
 
-    dataX, datay = dataset[:, columns-1], dataset[:, -1]
+    dataX, datay = dataset[:, 0:columns-1], dataset[:, -1]
     return dataX, datay
         
 
