@@ -18,6 +18,21 @@ from Ssmote import Ssmote
 def main():
     for dataset, filename in Processing().dataload():
         print(filename)
+        X, y = convert2numpy(dataset)
+
+        print('X:', X.shape)
+        ratio = 4 # 小于4%的模块合并
+        k = 5
+        r = 0.1
+        ssmote = Ssmote(X=X, y=y, ratio=ratio, k=k, r=r)
+        synX, synY = ssmote.synthesis()
+        print(synX)
+        print(synY)
+"""        
+def foo():
+    # 各操作分离
+    for dataset, filename in Processing().dataload():
+        print(filename)
         # 计算各模块的比例
         proportion = proportion_(dataset, filename)
         print(proportion)
@@ -32,12 +47,12 @@ def main():
         print('X shape', X.shape)
         print('传入的proportion：', after)
         # ssmote合成新数据
-        ssmote = Ssmote(X=X, y=y, proportion=after)
-        synX, synY = ssmote.synthesis()
-        print(synX, synY)
+        # ssmote = Ssmote(X=X, y=y, proportion=after)
+        # synX, synY = ssmote.synthesis()
+        # print(synX, synY)
         print('-'*30, '一个文件完成啦！', '-'*30)
     print('o')
-
+"""
 
 if __name__ == '__main__':
     main()

@@ -8,6 +8,7 @@
 # Distributed under terms of the MIT license.
 
 from concatModule import ConcatMinority
+from statistics import Statistics
 from sklearn.neighbors import NearestNeighbors
 from utils import tuple2dict, arrayConcat
 import numpy as np
@@ -37,7 +38,7 @@ class Ssmote(object):
         模块个数 100   50    50=25+25    45=15+15+15      30=10+10+10
     """
 
-    def __init__(self, X, y, proportion, k=5, r=0.1):
+    def __init__(self, X, y, ratio, k=5, r=0.1):
         """ 传入文件， 对应比例分布
             X: features
             y: defects [5,4,4,3,3,2,2,2,1,1,1,1,0,0,0,0,...]
@@ -47,12 +48,52 @@ class Ssmote(object):
         """
         self.X = X
         self.y = y
-        self._proportion = proportion
+        self.ratio = ratio
+        self._proportion = self.concat_()
         self.instanceSize, self.n_attrs = X.shape
         self.k = k
         self.r = r
 
         self._proportion_modified = None
+
+    def proportion_(self, X, y):
+        """ 计算各个模块的比例
+        
+        """
+        statics = Statistics(y)
+        max_bug = statics.max_()
+        number_instance = statics.numberInstance()
+        unique, counts = np.unique(y, return_counts=True)
+        counter = dict(zip(unique, counts))
+        res = dict()
+        for i in range(max_bug + 1):
+            if i>=9:
+                break
+            if i in counter:
+                res[str(i)] = np.around(counter[i]/number_instance*100.0, decimals=4)
+            else:
+                res[str(i)] = 0
+        if max_bug>8:
+            sum_=0
+            for j in range(9, max_bug+1):
+                if j in counter:
+                    sum_+=counter[j]
+            # 令999代表大于8的模块
+            res['999'] = np.around(sum_/number_instance*100.0, decimals=4)
+        
+        return res
+
+    def concat_(self):
+        """ 调用ConcatMinority 合并小于ratio的模块
+        
+        """
+        proportion = self.proportion_(self.X, self.y)
+        con = ConcatMinority(data=proportion, ratio=self.ratio)
+        # after 是合并后的proportion
+        after = con.concat()
+
+        return after
+
 
     def getSynNumber(self, arg1=None):
         """ 根据self._proportion 计算经过全部迭代后需要生成多少数据
@@ -73,12 +114,12 @@ class Ssmote(object):
             reverse=True)
         _proportion_dict = tuple2dict(_proportion)
         rounds = len(_proportion)
-        print('rounds :', rounds)
+        # print('rounds :', rounds)
         for _ in range(rounds):
             tmp = _proportion[-1]
             change = (tmp[0], tmp[1] + _proportion_dict[tmp[0]])
             _proportion[-1] = change
-            print('change =', change)
+            # print('change =', change)
 
             _proportion = sorted(_proportion, key=lambda x: x[1], reverse=True)
 
@@ -197,10 +238,10 @@ class Ssmote(object):
         self.syntheticX = self.syntheticX[::-1]
         self.syntheticY = np.array(self.syntheticY)
 
-        print('生成的X:', self.syntheticX.shape)
-        print('生成的y:', self.syntheticY.shape)
-        print('之前的X:', self.finalX.shape)
-        print('之前的y:', self.finaly.shape)
+        # print('生成的X:', self.syntheticX.shape)
+        # print('生成的y:', self.syntheticY.shape)
+        # print('之前的X:', self.finalX.shape)
+        # print('之前的y:', self.finaly.shape)
         self.finalX = np.vstack((self.finalX, self.syntheticX))
         self.finaly = np.hstack((self.finaly, self.syntheticY))
 
@@ -219,12 +260,12 @@ class Ssmote(object):
             nn = np.random.randint(0, self.k)
             nn = min(nn, len(nnarray) - 1)
 
-            print('\nnnarray =', nnarray)
-            print('nn =', nn)
-            print('i =', i)
-            print('trainingX.shape =', trainingX.shape)
-            print('trainingX:', trainingX)
-            print('trainingy:', trainingy)
+            # print('\nnnarray =', nnarray)
+            # print('nn =', nn)
+            # print('i =', i)
+            # print('trainingX.shape =', trainingX.shape)
+            # print('trainingX:', trainingX)
+            # print('trainingy:', trainingy)
             dif = trainingX[nnarray[nn]] - trainingX[i]
             gap = np.random.rand(1, self.n_attrs)
             self.syntheticX[self.count] = trainingX[i] + gap.flatten() * dif
