@@ -334,16 +334,16 @@ def main():
     proportion = [('0', 70.0), ('1', 15.0), ('2', 7), ('3+4', 5), ('5', 3)]
     # proportion = [('0', 100.0), ('1', 50.0), ('2', 25), ('3+4', 15), ('5', 10)]
 
-    con = Ssmote(X=X, y=y, proportion=proportion)
+    ssmote = Ssmote(X=X, y=y, ratio=4)
     # synProportion = con.getSynNumber()
     # print(synProportion)
-    all_X, all_y, all_size = con.getUnsyn()
+    all_X, all_y, all_size = ssmote.getUnsyn()
     print(all_X)
     print(all_y)
     print(all_size)
     print('-'*20, '下面开始合成', '-'*20)
 
-    resX, resy = con.synthesis()
+    resX, resy = ssmote.synthesis()
     print(resX, resy)
 
 

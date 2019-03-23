@@ -75,11 +75,20 @@ class ConcatMinority(object):
                     j += 1
                 after.append((concat_key, sum_))
 
+        # 合并完成后, 若最后一类仍然小于ratio, 添加到前一类
+        last_key, last_value = after[-1][0], after[-1][1]
+        if last_value < self._ratio:
+            last2_key, last2_value = after[-2][0], after[-2][1]
+            tmp = (last2_key+'+'+last_key, last_value+last2_value)
+            after = after[:-2]
+            after.append(tmp)
+
+
         return after
 
 
 def main():
-    d = {'0': 80.0, '1': 10.0, '2': 5, '3': 2.0, '4': 1.5, '5': 1.5}
+    d = {'0': 70.0, '1': 15.0, '2': 8, '3': 5.0, '4': 0.5, '5': 0.5, '6': 1}
     con = ConcatMinority(data=d, ratio=3)
     after = con.concat()
     print(after)
