@@ -121,6 +121,7 @@ class Ssmote(object):
             _proportion[-1] = change
             # print('change =', change)
 
+            # 每次迭代后, 都需要根据数据个数重新进行排序
             _proportion = sorted(_proportion, key=lambda x: x[1], reverse=True)
 
         # 减去原本的样本，得到需要生成的样本个数
