@@ -58,7 +58,7 @@ class Ssmote(object):
 
     def proportion_(self, X, y):
         """ 计算各个模块的比例
-        
+
         """
         statics = Statistics(y)
         max_bug = statics.max_()
@@ -67,25 +67,26 @@ class Ssmote(object):
         counter = dict(zip(unique, counts))
         res = dict()
         for i in range(max_bug + 1):
-            if i>=9:
+            if i >= 9:
                 break
             if i in counter:
-                res[str(i)] = np.around(counter[i]/number_instance*100.0, decimals=4)
+                res[str(i)] = np.around(counter[i] /
+                                        number_instance * 100.0, decimals=4)
             else:
                 res[str(i)] = 0
-        if max_bug>8:
-            sum_=0
-            for j in range(9, max_bug+1):
+        if max_bug > 8:
+            sum_ = 0
+            for j in range(9, max_bug + 1):
                 if j in counter:
-                    sum_+=counter[j]
+                    sum_ += counter[j]
             # 令999代表大于8的模块
-            res['999'] = np.around(sum_/number_instance*100.0, decimals=4)
-        
+            res['999'] = np.around(sum_ / number_instance * 100.0, decimals=4)
+
         return res
 
     def concat_(self):
         """ 调用ConcatMinority 合并小于ratio的模块
-        
+
         """
         proportion = self.proportion_(self.X, self.y)
         con = ConcatMinority(data=proportion, ratio=self.ratio)
@@ -93,7 +94,6 @@ class Ssmote(object):
         after = con.concat()
 
         return after
-
 
     def getSynNumber(self, arg1=None):
         """ 根据self._proportion 计算经过全部迭代后需要生成多少数据
@@ -172,7 +172,8 @@ class Ssmote(object):
                 # 添加， 不执行over_sampling
                 all_trainingX.append(trainingX)
                 all_trainingy.append(trainingy)
-                all_size.append(size * instanceSize / 100)
+                size_around = np.around(size * instanceSize / 100)
+                all_size.append(size_around)
             else:
                 _classes = _class.split('+')
                 tmpX = [self.X[np.where(self.y == int(c))] for c in _classes]
@@ -186,7 +187,9 @@ class Ssmote(object):
 
                 all_trainingX.append(trainingX)
                 all_trainingy.append(trainingy)
-                all_size.append(size * instanceSize / 100)
+                size_around = np.around(size * instanceSize / 100)
+                # print('size_around =', size_around)
+                all_size.append(size_around)
 
         return all_trainingX, all_trainingy, all_size
 
@@ -217,7 +220,7 @@ class Ssmote(object):
         # 需要合成的数据为p * index, 设index=1
         self.index = 1
         p = synSize / self.index
-        if len(trainingX)==1:
+        if len(trainingX) == 1:
             p = 1
         p = int(p)
         # trainingX =  # Todo
@@ -231,9 +234,9 @@ class Ssmote(object):
             # k = self.k
             # 使用自定义的取邻近k个函数
             nnarray = self.nearestNeighbors(
-                self.r, k, targetPoint=trainingX[int(i/p)], allPoints=trainingX)
+                self.r, k, targetPoint=trainingX[int(i / p)], allPoints=trainingX)
 
-            self._populate(trainingX, trainingy, int(i/p), nnarray, self.r)
+            self._populate(trainingX, trainingy, int(i / p), nnarray, self.r)
 
         self.syntheticX = self.syntheticX[::-1]
         self.syntheticY = np.array(self.syntheticY)
@@ -341,7 +344,7 @@ def main():
     print(all_X)
     print(all_y)
     print(all_size)
-    print('-'*20, '下面开始合成', '-'*20)
+    print('-' * 20, '下面开始合成', '-' * 20)
 
     resX, resy = ssmote.synthesis()
     print(resX, resy)
